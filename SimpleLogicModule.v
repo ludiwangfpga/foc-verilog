@@ -2010,6 +2010,6 @@ cos_table[997] = 16'h7FE8;
 cos_table[998] = 16'h7FF5;
 cos_table[999] = 16'h7FFC;
     end
-assign sum = sin_table[a] -  cos_table[b];
+assign sum = a* sin_table[a] - b* cos_table[b];
 
 endmodule
