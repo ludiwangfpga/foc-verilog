@@ -1,10 +1,12 @@
 `timescale 1ns / 1ps
 module SimpleLogicModule (
-input [31:0] a,
-input [31:0] b,
-input [31:0] c,
-output [31:0] sum,
-output [31:0] sum2
+input [15:0] a,
+input [15:0] b,
+input [15:0] c,
+output [15:0] sum,
+output [15:0] sum2,
+output [15:0] sum3,
+output [15:0] sum4
 );
 reg [15:0] sin_table [0:999];
 reg [15:0] cos_table [0:999];
@@ -2010,6 +2012,8 @@ cos_table[997] = 16'h7FE8;
 cos_table[998] = 16'h7FF5;
 cos_table[999] = 16'h7FFC;
     end
-assign sum = a*sin_table[c] - b*cos_table[c];
-assign sum2 = a*sin_table[c] - b*cos_table[c];
+assign sum =  a*cos_table[c];
+assign sum2 = b*sin_table[c];
+assign sum3 = b*cos_table[c];
+assign sum4 = a*sin_table[c];
 endmodule
