@@ -1,0 +1,97 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def goodness_of_fit(y_fitting, y_no_fitting):
+    SSR = np.sum((y_fitting - np.mean(y_no_fitting)) ** 2)
+    SST = np.sum((y_no_fitting - np.mean(y_no_fitting)) ** 2)
+    rr = SSR / SST
+    return rr
+
+def main():
+    x_arr = [
+    0.697, 0.697, 0.700, 0.700, 0.701, 0.701, 0.701, 0.704, 0.704, 0.705,
+    0.705, 0.705, 0.708, 0.708, 0.708, 0.708, 0.708, 0.708, 0.708, 0.710,
+    0.712, 0.712, 0.712, 0.712, 0.715, 0.715, 0.715, 0.715, 0.715, 0.718,
+    0.719, 0.719, 0.719, 0.719, 0.722, 0.722, 0.722, 0.722, 0.722, 0.725,
+    0.725, 0.725, 0.725, 0.725, 0.729, 0.729, 0.729, 0.729, 0.729, 0.729,
+    0.733, 0.733, 0.733, 0.733, 0.733, 0.736, 0.736, 0.736, 0.736, 0.736,
+    0.739, 0.739, 0.739, 0.739, 0.739, 0.743, 0.743, 0.743, 0.743, 0.743,
+    0.743, 0.746, 0.746, 0.746, 0.746, 0.746, 0.747, 0.750, 0.750, 0.750,
+    0.750, 0.750, 0.750, 0.753, 0.753, 0.753, 0.753, 0.753, 0.753, 0.756,
+    0.756, 0.756, 0.756, 0.756, 0.756, 0.760, 0.760, 0.760, 0.760, 0.760,
+    0.760, 0.763, 0.763, 0.763, 0.763, 0.763, 0.763, 0.767, 0.767, 0.767,
+    0.767, 0.767, 0.767, 0.770, 0.770, 0.770, 0.770, 0.770, 0.770, 0.770,
+    0.773, 0.773, 0.773, 0.773, 0.773, 0.773, 0.773, 0.773, 0.773, 0.773,
+    0.776, 0.776, 0.776, 0.776, 0.776, 0.776, 0.776, 0.776, 0.776, 0.776,
+]
+    y_arr = [
+    3.19, 3.19, 3.19, 3.19, 3.18, 3.18, 3.18, 3.18, 3.17, 3.17,
+    3.17, 3.16, 3.16, 3.16, 3.16, 3.15, 3.15, 3.15, 3.14, 3.14,
+    3.14, 3.13, 3.13, 3.12, 3.12, 3.12, 3.11, 3.11, 3.11, 3.10,
+    3.10, 3.10, 3.09, 3.09, 3.08, 3.08, 3.08, 3.07, 3.07, 3.06,
+    3.06, 3.06, 3.05, 3.05, 3.05, 3.04, 3.04, 3.03, 3.03, 3.03,
+    3.02, 3.02, 3.01, 3.01, 3.00, 3.00, 2.99, 2.99, 2.98, 2.98,
+    2.97, 2.97, 2.96, 2.96, 2.95, 2.95, 2.94, 2.94, 2.93, 2.93,
+    2.92, 2.91, 2.91, 2.90, 2.90, 2.89, 2.89, 2.88, 2.88, 2.87,
+    2.87, 2.86, 2.85, 2.85, 2.84, 2.84, 2.83, 2.83, 2.82, 2.81,
+    2.81, 2.80, 2.80, 2.79, 2.78, 2.78, 2.77, 2.77, 2.76, 2.76,
+    2.75, 2.74, 2.74, 2.73, 2.73, 2.72, 2.72, 2.71, 2.71, 2.70,
+    2.70, 2.69, 2.69, 2.68, 2.67, 2.67, 2.66, 2.66, 2.65, 2.65,
+    2.64, 2.64, 2.63, 2.63, 2.62, 2.61, 2.61, 2.60, 2.60, 2.59,
+    2.58, 2.58, 2.57, 2.57, 2.56, 2.56, 2.55, 2.55, 2.54, 2.54,
+]
+    max_capacity = 50
+    x_buffer = []
+    y_buffer = []
+
+    figure1, ax = plt.subplots(figsize=(8, 6))
+    ax.scatter(x_arr, y_arr, color='black', label="Original Data")
+    line, = ax.plot([], [], label="Fitted Curve")
+    predictions, = ax.plot([], [], 'ro', label="Predicted Points")
+
+    for i in range(len(x_arr)):
+        x_buffer.append(x_arr[i])
+        y_buffer.append(y_arr[i])
+
+        if len(x_buffer) > max_capacity:
+            x_buffer.pop(0)
+            y_buffer.pop(0)
+
+        # Perform polynomial fitting
+        coeff = np.polyfit(x_buffer, y_buffer, 2)
+        poly_fit = np.poly1d(coeff)
+        y_fit = poly_fit(x_buffer)
+
+        # Print goodness of fit
+        rr = goodness_of_fit(y_fit, y_buffer)
+        print("Goodness of fit: %.5f" % rr)
+
+        # Update fitted curve
+        line.set_data(x_buffer, y_fit)
+
+        # Predict the next 5 data points using the fitted curve
+        x_predict = np.linspace(x_buffer[-1], x_buffer[-1] + 0.002 * 5, 5)
+        y_predict = poly_fit(x_predict)
+
+        # Update the predicted points
+        predictions.set_data(x_predict, y_predict)
+
+        ax.relim()
+        ax.autoscale_view()
+        plt.pause(0.1)
+
+    # Final polynomial fitting after all data points are processed
+    coeff = np.polyfit(x_buffer, y_buffer, 3)
+    poly_fit = np.poly1d(coeff)
+    y_fit = poly_fit(x_buffer)
+
+    # Print goodness of fit
+    rr = goodness_of_fit(y_fit, y_buffer)
+    print("Goodness of fit (final): %.5f" % rr)
+
+    plt.title("Graph (Final Fitting)")
+    plt.legend(loc=2)
+    plt.show()
+
+if __name__ == "__main__":
+    main()
