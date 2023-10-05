@@ -58,12 +58,22 @@ foc_controller = FOCController(kp=1.0, ki=0.1, kd=1.0)
 theta, iq_ref, id_ref = np.pi/4, 1.0, 1.11111111111111
 
 start_time = time.time()
-end_time = start_time + 1  # 1 second later
-iterations = 0
+end_time = start_time + 10  # 1 minute later
+
+# Create an empty list to store the computations per second
+computations_per_second = []
 
 while time.time() < end_time:
-    ia_ib_ic, iq_id = foc_controller.compute(theta, iq_ref, id_ref)
-    iterations += 1
-    print(ia_ib_ic)
-    print(iq_id)
-print(f"Number of computations in 1 second: {iterations}")
+    iterations = 0
+    check_time = time.time() + 1  # 1 second later
+    while time.time() < check_time:
+        ia_ib_ic, iq_id = foc_controller.compute(theta, iq_ref, id_ref)
+        iterations += 1
+
+        print(ia_ib_ic)
+    # Append the number of computations in this second to the list
+    computations_per_second.append(iterations)
+
+# Convert the list to a numpy array if needed
+computations_per_second_array = np.array(computations_per_second)
+print(computations_per_second_array)
